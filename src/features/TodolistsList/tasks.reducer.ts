@@ -19,8 +19,8 @@ export const fetchTasks = createAppAsyncThunk<{ tasks: TaskType[]; todolistId: s
       const tasks = res.data.items;
       dispatch(appActions.setAppStatus({ status: "succeeded" }));
       return { tasks, todolistId };
-    } catch (error: any) {
-      handleServerNetworkError(error, dispatch);
+    } catch (e) {
+      handleServerNetworkError(e, dispatch);
       return rejectWithValue(null);
     }
   },
