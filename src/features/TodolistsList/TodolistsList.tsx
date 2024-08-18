@@ -1,14 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
-import {
-  addTodolistTC,
-  changeTodolistTitleTC,
-  fetchTodolistsTC,
-  FilterValuesType,
-  removeTodolistTC,
-  todolistsActions,
-} from "features/TodolistsList/todolists.reducer";
-import { addTaskTC, removeTaskTC, updateTask } from "features/TodolistsList/tasks.reducer";
+import { todolistsThunks, todolistsActions, FilterValuesType } from "features/TodolistsList/todolists.reducer";
+import { tasksThunks } from "features/TodolistsList/tasks.reducer";
 import { TaskStatuses } from "api/todolists-api";
 import { Grid, Paper } from "@mui/material";
 import { AddItemForm } from "components/AddItemForm/AddItemForm";
@@ -34,27 +27,27 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
     if (demo || !isLoggedIn) {
       return;
     }
-    const thunk = fetchTodolistsTC();
+    const thunk = todolistsThunks.fetchTodolists();
     dispatch(thunk);
   }, []);
 
   const removeTask = useCallback(function (id: string, todolistId: string) {
-    const thunk = removeTaskTC(id, todolistId);
+    const thunk = tasksThunks.removeTask({ taskId: id, todolistId });
     dispatch(thunk);
   }, []);
 
   const addTask = useCallback(function (title: string, todolistId: string) {
-    const thunk = addTaskTC(title, todolistId);
+    const thunk = tasksThunks.addTask({ title, todolistId });
     dispatch(thunk);
   }, []);
 
   const changeStatus = useCallback(function (id: string, status: TaskStatuses, todolistId: string) {
-    const thunk = updateTask({ taskId: id, model:{status}, todolistId });
+    const thunk = tasksThunks.updateTask({ taskId: id, model: { status }, todolistId });
     dispatch(thunk);
   }, []);
 
   const changeTaskTitle = useCallback(function (id: string, newTitle: string, todolistId: string) {
-    const thunk = updateTask({ taskId: id, model:{title: newTitle}, todolistId });
+    const thunk = tasksThunks.updateTask({ taskId: id, model: { title: newTitle }, todolistId });
     dispatch(thunk);
   }, []);
 
@@ -63,18 +56,18 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
   }, []);
 
   const removeTodolist = useCallback(function (id: string) {
-    const thunk = removeTodolistTC(id);
+    const thunk = todolistsThunks.removeTodolist(id);
     dispatch(thunk);
   }, []);
 
   const changeTodolistTitle = useCallback(function (id: string, title: string) {
-    const thunk = changeTodolistTitleTC(id, title);
+    const thunk = todolistsThunks.changeTodolistTitle({ id, title });
     dispatch(thunk);
   }, []);
 
   const addTodolist = useCallback(
     (title: string) => {
-      const thunk = addTodolistTC(title);
+      const thunk = todolistsThunks.addTodolist(title);
       dispatch(thunk);
     },
     [dispatch],
